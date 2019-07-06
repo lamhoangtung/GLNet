@@ -53,7 +53,7 @@ class Cinnamon(data.Dataset):
         # TODO: Maybe need to create mask from json label or something
         if self.label:
             label = Image.open(os.path.join(
-                 self.root, 'labels/' + self.ids[index].replace('.jpg', '_mask.jpg')))
+                 self.root, 'mask/' + self.ids[index].replace('.png', '_mask.png')))
             sample['label'] = label
         if self.transform and self.label:
             image, label = self._transform(image, label)
