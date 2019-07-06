@@ -1,9 +1,9 @@
-export CUDA_VISIBLE_DEVICES=-1
+export CUDA_VISIBLE_DEVICES=5
 python3 train_deep_globe.py \
 --n_class 7 \
---data_path "/home/linus/2DOCR/data/DeepGlobe_mod/" \
---model_path "/home/linus/2DOCR/ultra_high_resolution_segmentation/experiment/deepglobe_1/" \
---log_path "/home/linus/2DOCR/ultra_high_resolution_segmentation/experiment/deepglobe_1/" \
+--data_path "/mnt/data/linus/2DOCR/data/DeepGlobe_mod/" \
+--model_path "/mnt/data/linus/2DOCR/ultra_high_resolution_segmentation/experiments/deepglobe/" \
+--log_path "/mnt/data/linus/2DOCR/ultra_high_resolution_segmentation/experiments/deepglobe/" \
 --task_name "fpn_global.508_4.28.2019_lr2e5" \
 --mode 1 \
 --batch_size 6 \
