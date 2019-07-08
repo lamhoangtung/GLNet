@@ -19,8 +19,8 @@ from PIL import Image
 torch.backends.cudnn.deterministic = True
 
 transformer = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+    transforms.ToTensor()
+    #transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
     # transforms.Normalize([.485, .456, .406], [.229, .224, .225]),
 ])
 
@@ -32,15 +32,16 @@ def resize(images, shape, label=False):
     resized = list(images)
     for i in range(len(images)):
         if label:
-            resized[i] = images[i].resize(shape, Image.NEAREST)
+            resized[i] = images[i].resize(shape, Image.NEAREST).convert('L')
             # resized[i] = images[i].resize(shape, Image.BILINEAR)
         else:
-            resized[i] = images[i].resize(shape, Image.BILINEAR)
+            resized[i] = images[i].resize(shape, Image.BILINEAR).convert('RGB')
     return resized
 
 def _mask_transform(mask):
     target = np.array(mask).astype('int32')
-    target[target == 255] = -1
+    target[target >= 125] = 1
+    target[target <= 125] = 0
     # target -= 1 # in DeepGlobe: make class 0 (should be ignored) as -1 (to be ignored in cross_entropy)
     return target
 
@@ -329,6 +330,7 @@ class Trainer(object):
         labels_glb = resize(labels, (self.size_g[0] // 4, self.size_g[1] // 4), label=True) # down 1/4 for loss
         # labels_glb = resize(labels, self.size_g, label=True) # must downsample image for reduced GPU memory
         labels_glb = masks_transform(labels_glb)
+        # labels_glb = labels_glb.permute(0, 3, 1, 2)
 
         if self.mode == 2 or self.mode == 3:
             patches, coordinates, templates, sizes, ratios = global2patch(images, self.size_p)
