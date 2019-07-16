@@ -126,3 +126,5 @@ venv.bak/
 .mypy_cache/
 
 experiment
+data/
+.zip
