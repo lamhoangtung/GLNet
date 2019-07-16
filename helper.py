@@ -40,8 +40,7 @@ def resize(images, shape, label=False):
 
 def _mask_transform(mask):
     target = np.array(mask).astype('int32')
-    target[target >= 125] = 1
-    target[target <= 125] = 0
+    target[target >= 200] = 1
     # target -= 1 # in DeepGlobe: make class 0 (should be ignored) as -1 (to be ignored in cross_entropy)
     return target
 
