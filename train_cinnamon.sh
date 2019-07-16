@@ -1,9 +1,9 @@
-export CUDA_VISIBLE_DEVICES=5
+# export CUDA_VISIBLE_DEVICES=5
 python3 train_cinnamon.py \
 --n_class 2 \
---data_path "/mnt/data/linus/2DOCR/data/all_prj/" \
---model_path "/mnt/data/linus/2DOCR/ultra_high_resolution_segmentation/experiments/cinnamon/" \
---log_path "/mnt/data/linus/2DOCR/ultra_high_resolution_segmentation/experiments/cinnamon/" \
+--data_path "./data/all_prj/" \
+--model_path "./experiments/cinnamon/" \
+--log_path "./experiments/cinnamon/" \
 --task_name "fpn_global.508_4.28.2019_lr2e5" \
 --mode 1 \
 --batch_size 6 \
