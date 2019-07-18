@@ -333,6 +333,14 @@ class Trainer(object):
 
         if self.mode == 2 or self.mode == 3:
             patches, coordinates, templates, sizes, ratios = global2patch(images, self.size_p)
+            for index, each_img in enumerate(patches):
+                for each in each_img:
+                    if len(each.split())!=3:
+                        print('Here is the bugs at image {}/6'.format(index))
+                        bug_img = images[index] 
+                        print(bug_img)
+                        import ipdb; ipdb.set_trace()
+                        break
             label_patches, _, _, _, _ = global2patch(labels, self.size_p)
             # patches, label_patches = global2patch(images, self.n, self.step, self.size_p), global2patch(labels, self.n, self.step, self.size_p)
             # predicted_patches = [ np.zeros((self.n**2, self.n_class, self.size_p[0], self.size_p[1])) for i in range(len(images)) ]
@@ -357,6 +365,7 @@ class Trainer(object):
                 # while j < self.n**2:
                 while j < len(coordinates[i]):
                     patches_var = images_transform(patches[i][j : j+self.sub_batch_size]) # b, c, h, w
+                    # import ipdb; ipdb.set_trace()
                     label_patches_var = masks_transform(resize(label_patches[i][j : j+self.sub_batch_size], (self.size_p[0] // 4, self.size_p[1] // 4), label=True)) # down 1/4 for loss
                     # label_patches_var = masks_transform(label_patches[i][j : j+self.sub_batch_size])
 
