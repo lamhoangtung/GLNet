@@ -48,12 +48,12 @@ class Cinnamon(data.Dataset):
         sample = {}
         sample['id'] = self.ids[index][:-8]
         image = Image.open(os.path.join(
-            self.root, "images/" + self.ids[index]))
+            self.root, "images/" + self.ids[index])).convert('RGB')
         sample['image'] = image
         # TODO: Maybe need to create mask from json label or something
         if self.label:
             label = Image.open(os.path.join(
-                 self.root, 'mask/' + self.ids[index].replace('.png', '_mask.png')))
+                 self.root, 'mask/' + self.ids[index].replace('.png', '_mask.png'))).convert('L')
             sample['label'] = label
         if self.transform and self.label:
             image, label = self._transform(image, label)
