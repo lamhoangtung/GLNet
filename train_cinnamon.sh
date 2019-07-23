@@ -4,7 +4,7 @@ python3 train_cinnamon.py \
 --data_path "./data/all_prj/" \
 --model_path "./experiments/cinnamon/saved_models/" \
 --log_path "./experiments/cinnamon/" \
---task_name "fpn_global.508_4.28.2019_lr2e5" \
+--task_name "fpn_globa2local.508_4.28.2019_lr2e5" \
 --mode 2 \
 --batch_size 1 \
 --sub_batch_size 6 \
