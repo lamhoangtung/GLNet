@@ -192,7 +192,7 @@ for epoch in range(num_epochs):
             # if not (test or evaluation): torch.save(model.state_dict(), "./saved_models/" + task_name + ".epoch" + str(epoch) + ".pth")
             if not (test or evaluation):
                 torch.save(model.state_dict(),
-                           "./saved_models/" + task_name + ".pth")
+                           os.path.join(args.model_path, task_name+".pth"))
 
             if test:
                 break
