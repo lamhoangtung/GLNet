@@ -2,7 +2,7 @@
 python3 train_cinnamon.py \
 --n_class 2 \
 --data_path "./data/all_prj/" \
---model_path "./experiments/cinnamon/" \
+--model_path "./experiments/cinnamon/saved_models/" \
 --log_path "./experiments/cinnamon/" \
 --task_name "fpn_global.508_4.28.2019_lr2e5" \
 --mode 2 \
@@ -10,7 +10,7 @@ python3 train_cinnamon.py \
 --sub_batch_size 6 \
 --size_g 508 \
 --size_p 508 \
---path_g "./experiments/cinnamon/saved_models/fpn_global.508_4.28.2019_lr2e5.pth" \
+--path_g "fpn_global.508_4.28.2019_lr2e5.pth" \
 --path_g2l "fpn_global2local.508.deep.cat.1x_ensemble_fmreg.p3_10.14.2018.lr2e5.pth" \
 --path_l2g "fpn_local2global.508_deep.cat_ensemble.p3_10.31.2018.lr2e5.local1x.epoch13.pth" \
 --num_workers 16
