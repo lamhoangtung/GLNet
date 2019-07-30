@@ -43,7 +43,10 @@ class Options():
         config = configparser.ConfigParser()
         config.read(args.config)
         for keys in config['DEFAULT']:
-            setattr(args, keys, config['DEFAULT'][keys])
+            try:
+                setattr(args, keys, int(config['DEFAULT'][keys]))
+            except ValueError:
+                setattr(args, keys, config['DEFAULT'][keys])
         # default settings for epochs and lr
         if args.mode == 1 or args.mode == 3:
             args.num_epochs = 120
