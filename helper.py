@@ -13,6 +13,9 @@ from torchvision import transforms
 from models.fpn_global_local_fmreg_ensemble import fpn
 from utils.metrics import ConfusionMatrix
 from PIL import Image
+import zipfile
+import subprocess
+import os
 
 # torch.cuda.synchronize()
 # torch.backends.cudnn.benchmark = True
@@ -635,3 +638,14 @@ class Evaluator(object):
                 return predictions, predictions_global, predictions_local
             else:
                 return None, predictions_global, None
+
+
+def unzip(zip_file, to_folder):
+    zip_ref = zipfile.ZipFile(zip_file, 'r')
+    zip_ref.extractall(to_folder)
+    zip_ref.close()
+
+
+def install_dependencies():
+    if os.path.isfile('requirements.txt'):
+        subprocess.run('pip install -r requirements.txt', shell=True)

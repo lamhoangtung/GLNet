@@ -15,10 +15,20 @@ from utils.loss import CrossEntropyLoss2d, SoftCrossEntropyLoss2d, FocalLoss
 from utils.lovasz_losses import lovasz_softmax
 from utils.lr_scheduler import LR_Scheduler
 from tensorboardX import SummaryWriter
-from helper import create_model_load_weights, get_optimizer, Trainer, Evaluator, collate, collate_test
+from helper import create_model_load_weights, get_optimizer, Trainer, Evaluator, collate, collate_test, unzip, install_dependencies
 from option import Options
 
 args = Options().parse()
+
+print('Installing dependencies ...')
+install_dependencies()
+
+print('Unziping data ...')
+unzip(args.zip_path, args.data_path)
+
+print('Unziping previous weight ...')
+unzip(args.last_stage_weight, args.log_path)
+
 n_class = args.n_class
 
 # torch.cuda.synchronize()
@@ -162,15 +172,16 @@ for epoch in range(num_epochs):
                     labels = sample_batched['label']  # PIL images
 
                 if test:
-                    if not os.path.isdir("./prediction/"):
-                        os.mkdir("./prediction/")
+                    predictions_path = os.path.join(args.log_path, 'prediction')
+                    if not os.path.isdir(predictions_path):
+                        os.mkdir(predictions_path)
                     for i in range(len(images)):
                         if mode == 1:
                             transforms.functional.to_pil_image(classToRGB(
-                                predictions_global[i]) * 255.).save("./prediction/" + sample_batched['id'][i] + "_mask.png")
+                                predictions_global[i]) * 255.).save(os.path.join(predictions_path, "{}_mask.png".format(sample_batched['id'][i])))
                         else:
                             transforms.functional.to_pil_image(classToRGB(
-                                predictions[i]) * 255.).save("./prediction/" + sample_batched['id'][i] + "_mask.png")
+                                predictions[i]) * 255.).save(os.path.join(predictions_path, "{}_mask.png".format(sample_batched['id'][i])))
 
                 if not evaluation and not test:
                     if i_batch * batch_size + len(images) > (epoch % len(dataloader_val)) and i_batch * batch_size <= (epoch % len(dataloader_val)):

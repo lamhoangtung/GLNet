@@ -32,6 +32,7 @@ class Options():
         parser.add_argument('--path_l2g', type=str, default="", help='name for global from local model path')
         parser.add_argument('--lamb_fmreg', type=float, default=0.15, help='loss weight feature map regularization')
         parser.add_argument('--num_workers', type=int, default=2, help='Number of worker for dataloader')
+        parser.add_argument('--last_stage_weight', type=str, default='/opt/ml/input/data/train/all_prj_stage_1_120_ep.zip', help='Path to zipped last stage weight')
         # the parser
         self.parser = parser
 
