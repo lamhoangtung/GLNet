@@ -4,7 +4,7 @@ from sagemaker.pytorch import PyTorch
 instance_type = 'ml.p3.2xlarge'
 train_data_path = 's3://rnd-ocr/linus/2DOCR/glnet/data/'
 output_path = 's3://rnd-ocr/linus/2DOCR/glnet/log/'
-code_location = 's3://rnd-ocr/linus/2DOCR/glnet/code/ultra_high_resolution_segmentation-sagemaker/'
+code_location = 's3://rnd-ocr/linus/2DOCR/glnet/code/'
 role = "arn:aws:iam::533155507761:role/service-role/AmazonSageMaker-ExecutionRole-20190312T160681"
 source_dir = "."
 pytorch_estimator = PyTorch(entry_point='train_cinnamon.py',

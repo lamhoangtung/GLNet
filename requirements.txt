@@ -1,8 +1,2 @@
-torch
 imgaug
 tensorboardX
-Pillow
-opencv-python
-tqdm
-ipdb
-torchvision

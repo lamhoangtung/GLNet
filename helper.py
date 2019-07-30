@@ -641,10 +641,11 @@ class Evaluator(object):
 
 
 def unzip(zip_file, to_folder):
+    to_folder = '/' + '/'.join([each for each in to_folder.split('/') if each][:-1]) + '/'
+    print('Extracting', zip_file, 'to', to_folder , '...')
     zip_ref = zipfile.ZipFile(zip_file, 'r')
     zip_ref.extractall(to_folder)
     zip_ref.close()
-
 
 def install_dependencies():
     if os.path.isfile('requirements.txt'):

@@ -23,12 +23,6 @@ args = Options().parse()
 print('Installing dependencies ...')
 install_dependencies()
 
-print('Unziping data ...')
-unzip(args.zip_path, args.data_path)
-
-print('Unziping previous weight ...')
-unzip(args.last_stage_weight, args.log_path)
-
 n_class = args.n_class
 
 # torch.cuda.synchronize()
@@ -38,11 +32,25 @@ torch.backends.cudnn.deterministic = True
 data_path = args.data_path
 model_path = args.model_path
 if not os.path.isdir(model_path):
-    os.mkdir(model_path)
+    os.makedirs(model_path, exist_ok=True)
 log_path = args.log_path
 if not os.path.isdir(log_path):
-    os.mkdir(log_path)
+    os.makedirs(log_path, exist_ok=True)
 task_name = args.task_name
+
+print('Unziping data ...')
+unzip(args.zip_path, args.data_path)
+
+print('Unziping previous weight ...')
+unzip(args.last_stage_weight, args.log_path)
+
+import subprocess
+print('ls data folder')
+subprocess.run('ls -all /opt/ml/input/data/train/', shell=True)
+print('ls all_prj folder')
+subprocess.run('ls -all /opt/ml/input/data/train/all_prj/', shell=True)
+print('ls saved_model folder')
+subprocess.run('ls -all /opt/ml/model/experiments/cinnamon/saved_models/', shell=True)
 
 print(task_name)
 ###################################
@@ -174,7 +182,7 @@ for epoch in range(num_epochs):
                 if test:
                     predictions_path = os.path.join(args.log_path, 'prediction')
                     if not os.path.isdir(predictions_path):
-                        os.mkdir(predictions_path)
+                        os.makedirs(predictions_path, exist_ok=True)
                     for i in range(len(images)):
                         if mode == 1:
                             transforms.functional.to_pil_image(classToRGB(
