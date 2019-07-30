@@ -7,6 +7,7 @@
 import os
 import argparse
 import torch
+import configparser
 
 # path_g = os.path.join(model_path, "cityscapes_global.800_4.5.2019.lr5e5.pth")
 # # path_g = os.path.join(model_path, "fpn_global.804_nonorm_3.17.2019.lr2e5" + ".pth")
@@ -33,11 +34,16 @@ class Options():
         parser.add_argument('--lamb_fmreg', type=float, default=0.15, help='loss weight feature map regularization')
         parser.add_argument('--num_workers', type=int, default=2, help='Number of worker for dataloader')
         parser.add_argument('--last_stage_weight', type=str, default='/opt/ml/input/data/train/all_prj_stage_1_120_ep.zip', help='Path to zipped last stage weight')
+        parser.add_argument('--config', type=str, default='train_cinnamon.ini', help='Path to Sagemaker config file')
         # the parser
         self.parser = parser
 
     def parse(self):
         args = self.parser.parse_args()
+        config = configparser.ConfigParser()
+        config.read(args.config)
+        for keys in config['DEFAULT']:
+            setattr(args, keys, config['DEFAULT'][keys])
         # default settings for epochs and lr
         if args.mode == 1 or args.mode == 3:
             args.num_epochs = 120

@@ -2,9 +2,9 @@ from sagemaker.pytorch import PyTorch
 
 # ref: https://aws.amazon.com/sagemaker/pricing/instance-types/
 instance_type = 'ml.p3.2xlarge'
-train_data_path = 's3://rnd-ocr/linus/glnet/input/'
-output_path = 's3://rnd-ocr/linus/glnet/log/'
-code_location = 's3://rnd-ocr/linus/ultra_high_resolution_segmentation/'
+train_data_path = 's3://rnd-ocr/linus/2DOCR/glnet/data/'
+output_path = 's3://rnd-ocr/linus/2DOCR/glnet/log/'
+code_location = 's3://rnd-ocr/linus/2DOCR/glnet/code/ultra_high_resolution_segmentation-sagemaker/'
 role = "arn:aws:iam::533155507761:role/service-role/AmazonSageMaker-ExecutionRole-20190312T160681"
 source_dir = "."
 pytorch_estimator = PyTorch(entry_point='train_cinnamon.py',
@@ -16,7 +16,7 @@ pytorch_estimator = PyTorch(entry_point='train_cinnamon.py',
                             train_instance_count=1,
                             train_volume_size=200,
                             base_job_name= 'glnet-sagemaker-linus',
-                            train_max_run=7*86400,  # 86400s ~ 1day
+                            train_max_run=5*86400,  # 86400s ~ 1day
                             framework_version='1.0.0',
                             py_version="py3",
                             hyperparameters={"config": "train_cinnamon.ini"})

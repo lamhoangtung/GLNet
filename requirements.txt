@@ -1,7 +1,8 @@
-torch==1.1.0
+torch
 imgaug
 tensorboardX
 Pillow
 opencv-python
 tqdm
 ipdb
+torchvision
