@@ -8,7 +8,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torchvision import transforms
-from tqdm import tqdm
 from dataset.cinnamon import Cinnamon, classToRGB
 from dataset.deep_globe import is_image_file
 from utils.loss import CrossEntropyLoss2d, SoftCrossEntropyLoss2d, FocalLoss
@@ -135,9 +134,8 @@ print("start training......")
 for epoch in range(num_epochs):
     trainer.set_train(model)
     optimizer.zero_grad()
-    tbar = tqdm(dataloader_train)
     train_loss = 0
-    for i_batch, sample_batched in enumerate(tbar):
+    for i_batch, sample_batched in enumerate(dataloader_train):
         if evaluation:
             break
         scheduler(optimizer, i_batch, epoch, best_pred)
@@ -145,10 +143,10 @@ for epoch in range(num_epochs):
         train_loss += loss.item()
         score_train, score_train_global, score_train_local = trainer.get_scores()
         if mode == 1:
-            tbar.set_description('Train loss: %.3f; global mIoU: %.3f' % (
+            print('Train loss: %.3f; global mIoU: %.3f' % (
                 train_loss / (i_batch + 1), np.mean(np.nan_to_num(score_train_global["iou"]))))
         else:
-            tbar.set_description('Train loss: %.3f; agg mIoU: %.3f' % (
+            print('Train loss: %.3f; agg mIoU: %.3f' % (
                 train_loss / (i_batch + 1), np.mean(np.nan_to_num(score_train["iou"]))))
 
     score_train, score_train_global, score_train_local = trainer.get_scores()
@@ -161,19 +159,19 @@ for epoch in range(num_epochs):
             print("evaluating...")
 
             if test:
-                tbar = tqdm(dataloader_test)
+                dataloader = dataloader_test
             else:
-                tbar = tqdm(dataloader_val)
+                dataloader = dataloader_val
 
-            for i_batch, sample_batched in enumerate(tbar):
+            for i_batch, sample_batched in enumerate(dataloader):
                 predictions, predictions_global, predictions_local = evaluator.eval_test(
                     sample_batched, model, global_fixed)
                 score_val, score_val_global, score_val_local = evaluator.get_scores()
                 if mode == 1:
-                    tbar.set_description('global mIoU: %.3f' % (
+                    print('global mIoU: %.3f' % (
                         np.mean(np.nan_to_num(score_val_global["iou"]))))
                 else:
-                    tbar.set_description('agg mIoU: %.3f' % (
+                    print('agg mIoU: %.3f' % (
                         np.mean(np.nan_to_num(score_val["iou"]))))
                 images = sample_batched['image']
                 if not test:
