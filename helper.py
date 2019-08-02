@@ -280,25 +280,25 @@ def get_optimizer(model, mode=1, learning_rate=2e-5):
 
 
 class Trainer(object):
-    def __init__(self, criterion, optimizer, n_class, size0, size_g, size_p, sub_batch_size=6, mode=1, lamb_fmreg=0.15):
-    # def __init__(self, criterion, optimizer, n_class, size_g, size_p, sub_batch_size=6, mode=1, lamb_fmreg=0.15):
+    # def __init__(self, criterion, optimizer, n_class, size0, size_g, size_p, sub_batch_size=6, mode=1, lamb_fmreg=0.15):
+    def __init__(self, criterion, optimizer, n_class, size_g, size_p, sub_batch_size=6, mode=1, lamb_fmreg=0.15):
         self.criterion = criterion
         self.optimizer = optimizer
         self.metrics_global = ConfusionMatrix(n_class)
         self.metrics_local = ConfusionMatrix(n_class)
         self.metrics = ConfusionMatrix(n_class)
         self.n_class = n_class
-        self.size0 = size0
+        # self.size0 = size0
         self.size_g = size_g
         self.size_p = size_p
-        self.n = sub_batch_size
+        # self.n = sub_batch_size
         self.sub_batch_size = sub_batch_size
         self.mode = mode
         self.lamb_fmreg = lamb_fmreg
 
-        self.ratio = float(size_p[0]) / size0[0]
-        self.step = (size0[0] - size_p[0]) // (self.n - 1)
-        self.template, self.coordinates = template_patch2global(size0, size_p, self.n, self.step)
+        # self.ratio = float(size_p[0]) / size0[0]
+        # self.step = (size0[0] - size_p[0]) // (self.n - 1)
+        # self.template, self.coordinates = template_patch2global(size0, size_p, self.n, self.step)
     
     def set_train(self, model):
         model.module.ensemble_conv.train()
@@ -333,14 +333,6 @@ class Trainer(object):
 
         if self.mode == 2 or self.mode == 3:
             patches, coordinates, templates, sizes, ratios = global2patch(images, self.size_p)
-            for index, each_img in enumerate(patches):
-                for each in each_img:
-                    if len(each.split())!=3:
-                        print('Here is the bugs at image {}/6'.format(index))
-                        bug_img = images[index] 
-                        print(bug_img)
-                        import ipdb; ipdb.set_trace()
-                        break
             label_patches, _, _, _, _ = global2patch(labels, self.size_p)
             # patches, label_patches = global2patch(images, self.n, self.step, self.size_p), global2patch(labels, self.n, self.step, self.size_p)
             # predicted_patches = [ np.zeros((self.n**2, self.n_class, self.size_p[0], self.size_p[1])) for i in range(len(images)) ]
@@ -395,7 +387,7 @@ class Trainer(object):
                 while j < len(coordinates[i]):
                     patches_var = images_transform(patches[i][j : j+self.sub_batch_size]) # b, c, h, w
                     # fm_patches, output_patches = model.module.collect_local_fm(images_glb[i:i+1], patches_var, self.ratio, self.coordinates, [j, j+self.sub_batch_size], len(images), global_model=global_fixed, template=self.template, n_patch_all=self.n**2) # include cordinates
-                    fm_patches, output_patches = model.module.collect_local_fm(images_glb[i:i+1], patches_var, ratios[i], coordinates[i], [j, j+self.sub_batch_size], len(images), global_model=global_fixed, template=self.template, n_patch_all=len(coordinates[i]))
+                    fm_patches, output_patches = model.module.collect_local_fm(images_glb[i:i+1], patches_var, ratios[i], coordinates[i], [j, j+self.sub_batch_size], len(images), global_model=global_fixed, template=templates[0], n_patch_all=len(coordinates[i]))
                     predicted_patches[i][j:j+output_patches.size()[0]] = F.interpolate(output_patches, size=self.size_p, mode='nearest').data.cpu().numpy()
                     j += self.sub_batch_size
             # train on global image
@@ -451,23 +443,23 @@ class Trainer(object):
 
 
 class Evaluator(object):
-    def __init__(self, n_class, size0, size_g, size_p, sub_batch_size=6, mode=1, test=False):
-    # def __init__(self, n_class, size_g, size_p, sub_batch_size=6, mode=1, test=False):
+    # def __init__(self, n_class, size0, size_g, size_p, sub_batch_size=6, mode=1, test=False):
+    def __init__(self, n_class, size_g, size_p, sub_batch_size=6, mode=1, test=False):
         self.metrics_global = ConfusionMatrix(n_class)
         self.metrics_local = ConfusionMatrix(n_class)
         self.metrics = ConfusionMatrix(n_class)
         self.n_class = n_class
-        self.size0 = size0
+        # self.size0 = size0
         self.size_g = size_g
         self.size_p = size_p
-        self.n = sub_batch_size
+        # self.n = sub_batch_size
         self.sub_batch_size = sub_batch_size
         self.mode = mode
         self.test = test
 
-        self.ratio = float(size_p[0]) / size0[0]
-        self.step = (size0[0] - size_p[0]) // (self.n - 1)
-        self.template, self.coordinates = template_patch2global(size0, size_p, self.n, self.step)
+        # self.ratio = float(size_p[0]) / size0[0]
+        # self.step = (size0[0] - size_p[0]) // (self.n - 1)
+        # self.template, self.coordinates = template_patch2global(size0, size_p, self.n, self.step)
 
         if test:
             self.flip_range = [False, True]

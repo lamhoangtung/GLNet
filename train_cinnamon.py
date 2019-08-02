@@ -69,7 +69,7 @@ dataloader_test = torch.utils.data.DataLoader(
 
 ##### sizes are (w, h) ##############################
 # make sure margin / 32 is over 1.5 AND size_g is divisible by 4
-size0 = (10000, 10000)
+# size0 = (10000, 10000)
 size_g = (args.size_g, args.size_g)  # resized global image
 size_p = (args.size_p, args.size_p)  # cropped local patch size
 sub_batch_size = args.sub_batch_size  # batch size for train local patches
@@ -109,9 +109,9 @@ if not evaluation:
     writer = SummaryWriter(log_dir=log_path + task_name)
     f_log = open(log_path + task_name + ".log", 'w')
 
-trainer = Trainer(criterion, optimizer, n_class, size0, size_g,
+trainer = Trainer(criterion, optimizer, n_class, size_g,
                   size_p, sub_batch_size, mode, lamb_fmreg)
-evaluator = Evaluator(n_class, size0, size_g, size_p, sub_batch_size, mode, test)
+evaluator = Evaluator(n_class, size_g, size_p, sub_batch_size, mode, test)
 
 best_pred = 0.0
 print("start training......")
