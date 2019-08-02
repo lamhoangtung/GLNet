@@ -280,25 +280,25 @@ def get_optimizer(model, mode=1, learning_rate=2e-5):
 
 
 class Trainer(object):
-    # def __init__(self, criterion, optimizer, n_class, size0, size_g, size_p, n, sub_batch_size=6, mode=1, lamb_fmreg=0.15):
-    def __init__(self, criterion, optimizer, n_class, size_g, size_p, sub_batch_size=6, mode=1, lamb_fmreg=0.15):
+    def __init__(self, criterion, optimizer, n_class, size0, size_g, size_p, sub_batch_size=6, mode=1, lamb_fmreg=0.15):
+    # def __init__(self, criterion, optimizer, n_class, size_g, size_p, sub_batch_size=6, mode=1, lamb_fmreg=0.15):
         self.criterion = criterion
         self.optimizer = optimizer
         self.metrics_global = ConfusionMatrix(n_class)
         self.metrics_local = ConfusionMatrix(n_class)
         self.metrics = ConfusionMatrix(n_class)
         self.n_class = n_class
-        # self.size0 = size0
+        self.size0 = size0
         self.size_g = size_g
         self.size_p = size_p
-        # self.n = n
+        self.n = sub_batch_size
         self.sub_batch_size = sub_batch_size
         self.mode = mode
         self.lamb_fmreg = lamb_fmreg
 
-        # self.ratio = float(size_p[0]) / size0[0]
-        # self.step = (size0[0] - size_p[0]) // (n - 1)
-        # self.template, self.coordinates = template_patch2global(size0, size_p, n, self.step)
+        self.ratio = float(size_p[0]) / size0[0]
+        self.step = (size0[0] - size_p[0]) // (self.n - 1)
+        self.template, self.coordinates = template_patch2global(size0, size_p, self.n, self.step)
     
     def set_train(self, model):
         model.module.ensemble_conv.train()
@@ -413,7 +413,7 @@ class Trainer(object):
                     fl = fm_patches[i][j : j+self.sub_batch_size].cuda()
                     # fg = model.module._crop_global(fm_global[i:i+1], self.coordinates[j:j+self.sub_batch_size], self.ratio)[0]
                     fg = model.module._crop_global(fm_global[i:i+1], coordinates[i][j:j+self.sub_batch_size], ratios[i])[0]
-                    fg = F.interpolate(fg, size=fl.size()[2:], mode='bilinear')
+                    fg = F.interpolate(fg, size=fl.size()[2:], mode='bilinear', align_corners=True)
                     output_ensembles = model.module.ensemble(fl, fg)
                     # output_ensembles = F.interpolate(model.module.ensemble(fl, fg), self.size_p, **model.module._up_kwargs)
                     loss = self.criterion(output_ensembles, label_patches_var)# + 0.15 * mse(fl, fg)
@@ -451,23 +451,23 @@ class Trainer(object):
 
 
 class Evaluator(object):
-    # def __init__(self, n_class, size0, size_g, size_p, n, sub_batch_size=6, mode=1, test=False):
-    def __init__(self, n_class, size_g, size_p, sub_batch_size=6, mode=1, test=False):
+    def __init__(self, n_class, size0, size_g, size_p, sub_batch_size=6, mode=1, test=False):
+    # def __init__(self, n_class, size_g, size_p, sub_batch_size=6, mode=1, test=False):
         self.metrics_global = ConfusionMatrix(n_class)
         self.metrics_local = ConfusionMatrix(n_class)
         self.metrics = ConfusionMatrix(n_class)
         self.n_class = n_class
-        # self.size0 = size0
+        self.size0 = size0
         self.size_g = size_g
         self.size_p = size_p
-        # self.n = n
+        self.n = sub_batch_size
         self.sub_batch_size = sub_batch_size
         self.mode = mode
         self.test = test
 
-        # self.ratio = float(size_p[0]) / size0[0]
-        # self.step = (size0[0] - size_p[0]) // (n - 1)
-        # self.template, self.coordinates = template_patch2global(size0, size_p, n, self.step)
+        self.ratio = float(size_p[0]) / size0[0]
+        self.step = (size0[0] - size_p[0]) // (self.n - 1)
+        self.template, self.coordinates = template_patch2global(size0, size_p, self.n, self.step)
 
         if test:
             self.flip_range = [False, True]
@@ -594,7 +594,7 @@ class Evaluator(object):
                                 fl = fm_patches[i][j : j+self.sub_batch_size].cuda()
                                 # fg = model.module._crop_global(fm_global[i:i+1], self.coordinates[j:j+self.sub_batch_size], self.ratio)[0]
                                 fg = model.module._crop_global(fm_global[i:i+1], coordinates[i][j:j+self.sub_batch_size], ratios[i])[0]
-                                fg = F.interpolate(fg, size=fl.size()[2:], mode='bilinear')
+                                fg = F.interpolate(fg, size=fl.size()[2:], mode='bilinear', align_corners=True)
                                 output_ensembles = model.module.ensemble(fl, fg) # include cordinates
                                 # output_ensembles = F.interpolate(model.module.ensemble(fl, fg), self.size_p, **model.module._up_kwargs)
 
