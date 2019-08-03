@@ -569,7 +569,7 @@ class Evaluator(object):
                             while j < len(coordinates[i]):
                                 patches_var = images_transform(patches[i][j : j+self.sub_batch_size]) # b, c, h, w
                                 # fm_patches, output_patches = model.module.collect_local_fm(images_glb[i:i+1], patches_var, self.ratio, self.coordinates, [j, j+self.sub_batch_size], len(images), global_model=global_fixed, template=self.template, n_patch_all=self.n**2) # include cordinates
-                                fm_patches, output_patches = model.module.collect_local_fm(images_glb[i:i+1], patches_var, ratios[i], coordinates[i], [j, j+self.sub_batch_size], len(images), global_model=global_fixed, template=self.template, n_patch_all=len(coordinates[i]))
+                                fm_patches, output_patches = model.module.collect_local_fm(images_glb[i:i+1], patches_var, ratios[i], coordinates[i], [j, j+self.sub_batch_size], len(images), global_model=global_fixed, template=templates[0], n_patch_all=len(coordinates[i]))
                                 predicted_patches[i][j:j+output_patches.size()[0]] += F.interpolate(output_patches, size=self.size_p, mode='nearest').data.cpu().numpy()
                                 j += self.sub_batch_size
                         # go through global image
