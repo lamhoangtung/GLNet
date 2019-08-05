@@ -357,7 +357,6 @@ class Trainer(object):
                 # while j < self.n**2:
                 while j < len(coordinates[i]):
                     patches_var = images_transform(patches[i][j : j+self.sub_batch_size]) # b, c, h, w
-                    # import ipdb; ipdb.set_trace()
                     label_patches_var = masks_transform(resize(label_patches[i][j : j+self.sub_batch_size], (self.size_p[0] // 4, self.size_p[1] // 4), label=True)) # down 1/4 for loss
                     # label_patches_var = masks_transform(label_patches[i][j : j+self.sub_batch_size])
 
@@ -582,7 +581,7 @@ class Evaluator(object):
                         # generate ensembles
                         for i in range(len(images)):
                             j = 0
-                            while j < self.n**2:
+                            while j < len(coordinates[i]):
                                 fl = fm_patches[i][j : j+self.sub_batch_size].cuda()
                                 # fg = model.module._crop_global(fm_global[i:i+1], self.coordinates[j:j+self.sub_batch_size], self.ratio)[0]
                                 fg = model.module._crop_global(fm_global[i:i+1], coordinates[i][j:j+self.sub_batch_size], ratios[i])[0]

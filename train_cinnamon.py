@@ -69,7 +69,6 @@ dataloader_test = torch.utils.data.DataLoader(
 
 ##### sizes are (w, h) ##############################
 # make sure margin / 32 is over 1.5 AND size_g is divisible by 4
-# size0 = (10000, 10000)
 size_g = (args.size_g, args.size_g)  # resized global image
 size_p = (args.size_p, args.size_p)  # cropped local patch size
 sub_batch_size = args.sub_batch_size  # batch size for train local patches
