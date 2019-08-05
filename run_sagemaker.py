@@ -15,9 +15,9 @@ pytorch_estimator = PyTorch(entry_point='train_cinnamon.py',
                             train_instance_type=instance_type,
                             train_instance_count=1,
                             train_volume_size=200,
-                            base_job_name= 'glnet-sagemaker-linus',
+                            base_job_name= 'glnet-mode-3-linus',
                             train_max_run=5*86400,  # 86400s ~ 1day
                             framework_version='1.0.0',
                             py_version="py3",
-                            hyperparameters={"config": "train_cinnamon.ini"})
+                            hyperparameters={"config": "train_cinnamon_stage_2.ini"})
 pytorch_estimator.fit({"train": train_data_path})
