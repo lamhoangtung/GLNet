@@ -19,5 +19,5 @@ pytorch_estimator = PyTorch(entry_point='train_cinnamon.py',
                             train_max_run=5*86400,  # 86400s ~ 1day
                             framework_version='1.0.0',
                             py_version="py3",
-                            hyperparameters={"config": "train_cinnamon_stage_2.ini"})
+                            hyperparameters={"config": "train_cinnamon_stage_3.ini"})
 pytorch_estimator.fit({"train": train_data_path})
